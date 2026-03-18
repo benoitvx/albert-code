@@ -161,11 +161,18 @@ install_ollama() {
   info "Installation d'Ollama..."
   curl -fsSL https://ollama.com/install.sh | sh
 
-  if command -v ollama &>/dev/null; then
-    success "Ollama installé"
-  else
+  if ! command -v ollama &>/dev/null; then
     error "Échec de l'installation d'Ollama. Essaie manuellement : https://ollama.com/download"
   fi
+
+  # L'installeur lance automatiquement l'app GUI — on la ferme
+  # pour piloter le serveur nous-mêmes (headless, sans icône menubar)
+  if pgrep -x "Ollama" >/dev/null 2>&1; then
+    osascript -e 'quit app "Ollama"' 2>/dev/null || true
+    sleep 2
+  fi
+
+  success "Ollama installé"
 }
 
 # ─────────────────────────────────────────────
@@ -180,12 +187,7 @@ start_ollama() {
   fi
 
   info "Démarrage d'Ollama..."
-  # Sur macOS, utiliser l'app (évite les conflits avec le serveur lancé par l'installeur)
-  if [[ -d "/Applications/Ollama.app" ]]; then
-    open -a Ollama
-  else
-    ollama serve &>/dev/null &
-  fi
+  ollama serve &>/dev/null &
 
   # Attendre qu'Ollama soit prêt (max 30 secondes)
   local tries=0
