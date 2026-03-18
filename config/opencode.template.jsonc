@@ -1,0 +1,26 @@
+{
+  // Configuration OpenCode pour Ollama (local)
+  // Généré par Albert Code installer
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1",
+        "apiKey": "ollama"
+      },
+      "models": {
+        "__MODEL_ID__": {
+          "name": "__MODEL_NAME__",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        }
+      }
+    }
+  },
+  "model": "ollama/__MODEL_ID__",
+  "small_model": "ollama/__MODEL_ID__"
+}

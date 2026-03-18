@@ -1,0 +1,3 @@
+[submodule "skills/skills-etat"]
+	path = skills/skills-etat
+	url = https://github.com/benoitvx/skills-etat.git
