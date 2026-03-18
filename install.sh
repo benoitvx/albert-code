@@ -207,6 +207,16 @@ pull_model() {
     return
   fi
 
+  # Attendre que la clé d'identité Ollama soit générée (premier lancement)
+  local tries=0
+  while [ ! -f "$HOME/.ollama/id_ed25519" ]; do
+    tries=$((tries + 1))
+    if [ "$tries" -ge 15 ]; then
+      error "La clé Ollama n'a pas été générée. Relance le script."
+    fi
+    sleep 1
+  done
+
   echo ""
   info "Téléchargement du modèle $MODEL_NAME ($MODEL_SIZE)..."
   info "C'est le plus long — ça peut prendre quelques minutes selon ta connexion."
