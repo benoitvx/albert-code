@@ -180,8 +180,12 @@ start_ollama() {
   fi
 
   info "Démarrage d'Ollama..."
-  ollama serve &>/dev/null &
-  OLLAMA_PID=$!
+  # Sur macOS, utiliser l'app (évite les conflits avec le serveur lancé par l'installeur)
+  if [[ -d "/Applications/Ollama.app" ]]; then
+    open -a Ollama
+  else
+    ollama serve &>/dev/null &
+  fi
 
   # Attendre qu'Ollama soit prêt (max 30 secondes)
   local tries=0
