@@ -288,6 +288,11 @@ configure_opencode() {
   success "Configuration créée : $config_file"
   info "  Provider : Ollama (localhost:11434)"
   info "  Modèle : $MODEL_NAME"
+
+  # Copier AGENTS.md (instructions projet) dans la config globale
+  if [[ -f "$SCRIPT_DIR/config/AGENTS.md" ]]; then
+    cp "$SCRIPT_DIR/config/AGENTS.md" "$config_dir/AGENTS.md"
+  fi
 }
 
 # ─────────────────────────────────────────────
@@ -391,6 +396,11 @@ BANNER
       sleep 1
     done
     echo -e "\033[0;32m✓\033[0m Ollama prêt"
+  fi
+  # Copier AGENTS.md dans le projet s'il n'existe pas
+  if [ ! -f "AGENTS.md" ] && [ -f "$HOME/.config/opencode/AGENTS.md" ]; then
+    cp "$HOME/.config/opencode/AGENTS.md" AGENTS.md
+    echo -e "\033[0;32m✓\033[0m Instructions DSFR/RGAA/ANSSI ajoutées au projet"
   fi
   opencode "$@"
 }
