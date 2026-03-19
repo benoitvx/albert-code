@@ -1,5 +1,13 @@
 # Instructions projet
 
+## Skills obligatoires
+
+Avant de coder, **toujours charger les skills suivantes** avec le tool `skill` :
+
+- **react-dsfr** : À charger systématiquement avant de créer ou modifier une interface React. Contient les bons imports, composants et patterns du Design System de l'État.
+- **rgaa** : À charger pour tout travail sur l'interface. Contient les 106 critères d'accessibilité RGAA 4.1.2 à respecter.
+- **securite-anssi** : À charger pour tout code backend, API, configuration serveur ou déploiement. Contient les 12 règles essentielles de sécurité de l'ANSSI.
+
 ## Conventions générales
 
 - Toute interface utilisateur doit respecter le **DSFR** (Design System de l'État)
