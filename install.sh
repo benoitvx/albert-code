@@ -429,6 +429,28 @@ BANNER
       echo -e "  Mise à jour : \033[0;34mcd ~/Desktop/albert-code && git pull && ./install.sh\033[0m"
     fi
   fi
+  # Mise à jour automatique des skills depuis GitHub (non bloquant)
+  local skills_dir="$HOME/.config/opencode/skills"
+  local skills_sha_file="$HOME/.config/opencode/.skills-sha"
+  local skills_sha_local skills_sha_remote
+  skills_sha_local="$(cat "$skills_sha_file" 2>/dev/null)"
+  skills_sha_remote="$(curl -sf --max-time 3 https://api.github.com/repos/benoitvx/skills-etat/commits/main 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"\([a-f0-9]*\)".*/\1/')"
+  if [ -n "$skills_sha_remote" ] && [ "$skills_sha_local" != "$skills_sha_remote" ]; then
+    echo -e "\033[0;34m▸\033[0m Mise à jour des skills..."
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+    if curl -sfL --max-time 15 "https://github.com/benoitvx/skills-etat/archive/main.tar.gz" | tar xz -C "$tmp_dir" 2>/dev/null; then
+      for skill in react-dsfr rgaa securite-anssi; do
+        if [ -d "$tmp_dir/skills-etat-main/$skill" ]; then
+          rm -rf "$skills_dir/$skill"
+          cp -r "$tmp_dir/skills-etat-main/$skill" "$skills_dir/$skill"
+        fi
+      done
+      echo "$skills_sha_remote" > "$skills_sha_file"
+      echo -e "\033[0;32m✓\033[0m Skills mises à jour"
+    fi
+    rm -rf "$tmp_dir"
+  fi
   # Copier AGENTS.md dans le projet s'il n'existe pas
   if [ ! -f "AGENTS.md" ] && [ -f "$HOME/.config/opencode/AGENTS.md" ]; then
     cp "$HOME/.config/opencode/AGENTS.md" AGENTS.md
