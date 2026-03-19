@@ -41,6 +41,12 @@ Avant de coder, **toujours charger les skills suivantes** avec le tool `skill` :
 - Hiérarchie des titres h1→h6 sans saut de niveau
 - Formulaires : chaque champ a un `<label>` associé, messages d'erreur explicites
 
+## Tests
+
+- Toute nouvelle fonctionnalité doit être accompagnée de tests
+- Avant de considérer une tâche terminée, lance les tests et vérifie qu'ils passent
+- Si tu modifies du code existant, ajoute des tests s'il n'y en a pas déjà
+
 ## Déploiement
 
 - Images Docker multi-stage (build + runtime séparés)
