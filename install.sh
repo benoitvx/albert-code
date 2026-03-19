@@ -294,9 +294,20 @@ configure_opencode() {
 # Étape 9 : Installer les skills
 # ─────────────────────────────────────────────
 
+INSTALLED_SKILLS=""
+
 install_skills() {
   local skills_dir="$HOME/.config/opencode/skills"
   mkdir -p "$skills_dir"
+
+  # Initialiser les submodules si nécessaire (skills-etat)
+  if [[ -f "$SCRIPT_DIR/.gitmodules" ]]; then
+    if [[ ! -f "$SCRIPT_DIR/skills/skills-etat/react-dsfr/skill.md" ]]; then
+      info "Récupération des skills (submodules git)..."
+      git -C "$SCRIPT_DIR" submodule update --init --recursive 2>/dev/null || \
+        warn "Impossible de récupérer les submodules git"
+    fi
+  fi
 
   info "Installation des skills..."
 
@@ -321,6 +332,7 @@ install_skills() {
       rm -rf "$skill_dst/.git"
       success "Skill '$skill' installée"
     fi
+    INSTALLED_SKILLS="${INSTALLED_SKILLS:+$INSTALLED_SKILLS, }$skill"
   done
 }
 
@@ -437,7 +449,11 @@ print_summary() {
   echo -e "  ${GREEN}✓${NC} Ollama (inférence locale)"
   echo -e "  ${GREEN}✓${NC} Modèle ${BOLD}$MODEL_NAME${NC}"
   echo -e "  ${GREEN}✓${NC} OpenCode (assistant IA terminal)"
-  echo -e "  ${GREEN}✓${NC} Skills : react-dsfr, rgaa, securite-anssi"
+  if [[ -n "$INSTALLED_SKILLS" ]]; then
+    echo -e "  ${GREEN}✓${NC} Skills : $INSTALLED_SKILLS"
+  else
+    echo -e "  ${YELLOW}⚠${NC} Aucune skill installée"
+  fi
   echo -e "  ${GREEN}✓${NC} Commande ${BOLD}albert-code${NC} disponible"
   echo ""
   echo -e "  ${BOLD}100% local — tes données restent sur ta machine.${NC}"
