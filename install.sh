@@ -363,10 +363,11 @@ create_alias() {
     rm -f "${shell_rc}.bak"
   fi
 
-  # Vérifier si la fonction existe déjà
+  # Supprimer l'ancienne fonction si elle existe (pour la mettre à jour)
   if grep -q "albert-code()" "$shell_rc" 2>/dev/null; then
-    success "Fonction albert-code déjà présente dans $shell_rc"
-    return
+    # Supprimer du commentaire jusqu'à la fermeture de la fonction
+    sed -i.bak '/# Albert Code — fonction/,/^}/d' "$shell_rc"
+    rm -f "${shell_rc}.bak"
   fi
 
   cat >> "$shell_rc" << 'FUNC'
