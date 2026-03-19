@@ -8,6 +8,7 @@ set -euo pipefail
 # ─────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ALBERT_CODE_VERSION="$(cat "$SCRIPT_DIR/VERSION" 2>/dev/null || echo '0.0.0')"
 
 # Couleurs
 RED='\033[0;31m'
@@ -293,6 +294,9 @@ configure_opencode() {
   if [[ -f "$SCRIPT_DIR/config/AGENTS.md" ]]; then
     cp "$SCRIPT_DIR/config/AGENTS.md" "$config_dir/AGENTS.md"
   fi
+
+  # Sauvegarder la version Albert Code installée
+  echo "$ALBERT_CODE_VERSION" > "$config_dir/.albert-code-version"
 }
 
 # ─────────────────────────────────────────────
@@ -415,17 +419,14 @@ BANNER
     done
     echo -e "\033[0;32m✓\033[0m Ollama prêt"
   fi
-  # Vérifier les mises à jour OpenCode (non bloquant)
-  if command -v npm >/dev/null 2>&1; then
-    local latest
-    latest="$(npm view opencode-ai version 2>/dev/null)"
-    if [ -n "$latest" ]; then
-      local current
-      current="$(opencode --version 2>/dev/null)"
-      if [ -n "$current" ] && [ "$current" != "$latest" ]; then
-        echo -e "\033[1;33m⚠\033[0m OpenCode $current installé — version $latest disponible"
-        echo -e "  Mise à jour : \033[0;34mopencode upgrade\033[0m"
-      fi
+  # Vérifier les mises à jour Albert Code (non bloquant, max 3s)
+  local ac_current ac_latest
+  ac_current="$(cat "$HOME/.config/opencode/.albert-code-version" 2>/dev/null)"
+  if [ -n "$ac_current" ]; then
+    ac_latest="$(curl -sf --max-time 3 https://raw.githubusercontent.com/benoitvx/albert-code/main/VERSION 2>/dev/null | tr -d '[:space:]')"
+    if [ -n "$ac_latest" ] && [ "$ac_current" != "$ac_latest" ]; then
+      echo -e "\033[1;33m⚠\033[0m Albert Code $ac_current — version $ac_latest disponible"
+      echo -e "  Mise à jour : \033[0;34mcd ~/Desktop/albert-code && git pull && ./install.sh\033[0m"
     fi
   fi
   # Copier AGENTS.md dans le projet s'il n'existe pas
