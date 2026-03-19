@@ -16,7 +16,7 @@
 | Modèle principal | Qwen 3.5 27B (Q4) | Dense, 72.4% SWE-bench, ~16 Go RAM |
 | Modèle léger | Qwen 3.5 35B-A3B (Q4) | MoE 3B actifs, 69.2% SWE-bench, ~10 Go RAM |
 | Skills | react-dsfr, rgaa, securite-anssi | Connaissances métier État |
-| MCP (optionnel) | Chrome DevTools MCP | L'IA voit le navigateur (DOM, console) |
+| MCP | chrome-devtools-mcp (slim) | L'IA voit le navigateur (DOM, console, screenshots) |
 
 ## ASCII Art
 

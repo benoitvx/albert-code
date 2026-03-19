@@ -296,7 +296,24 @@ configure_opencode() {
 }
 
 # ─────────────────────────────────────────────
-# Étape 9 : Installer les skills
+# Étape 9 : Vérifier Node.js (requis pour MCP)
+# ─────────────────────────────────────────────
+
+check_nodejs() {
+  if command -v node &>/dev/null; then
+    local node_version
+    node_version="$(node --version 2>/dev/null)"
+    success "Node.js détecté ($node_version)"
+    HAS_NODE=true
+  else
+    warn "Node.js non trouvé — le MCP Chrome DevTools ne sera pas disponible"
+    info "Pour l'installer plus tard : https://nodejs.org/"
+    HAS_NODE=false
+  fi
+}
+
+# ─────────────────────────────────────────────
+# Étape 10 : Installer les skills
 # ─────────────────────────────────────────────
 
 INSTALLED_SKILLS=""
@@ -465,6 +482,11 @@ print_summary() {
   else
     echo -e "  ${YELLOW}⚠${NC} Aucune skill installée"
   fi
+  if [[ "$HAS_NODE" == "true" ]]; then
+    echo -e "  ${GREEN}✓${NC} MCP Chrome DevTools (l'IA voit ton navigateur)"
+  else
+    echo -e "  ${YELLOW}⚠${NC} MCP Chrome DevTools non disponible (Node.js requis)"
+  fi
   echo -e "  ${GREEN}✓${NC} Commande ${BOLD}albert-code${NC} disponible"
   echo ""
   echo -e "  ${BOLD}100% local — tes données restent sur ta machine.${NC}"
@@ -491,6 +513,7 @@ start_ollama
 pull_model
 install_opencode
 configure_opencode
+check_nodejs
 install_skills
 create_alias
 smoke_test

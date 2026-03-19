@@ -22,5 +22,12 @@
     }
   },
   "model": "ollama/__MODEL_ID__",
-  "small_model": "ollama/__MODEL_ID__"
+  "small_model": "ollama/__MODEL_ID__",
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--slim"],
+      "enabled": true
+    }
+  }
 }
