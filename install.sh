@@ -415,6 +415,17 @@ BANNER
     done
     echo -e "\033[0;32m✓\033[0m Ollama prêt"
   fi
+  # Vérifier les mises à jour OpenCode (non bloquant)
+  local latest
+  latest="$(curl -sf --max-time 3 https://api.github.com/repos/opencode-ai/opencode/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/' 2>/dev/null)"
+  if [ -n "$latest" ]; then
+    local current
+    current="$(opencode --version 2>/dev/null)"
+    if [ -n "$current" ] && [ "$current" != "$latest" ]; then
+      echo -e "\033[1;33m⚠\033[0m OpenCode $current installé — version $latest disponible"
+      echo -e "  Mise à jour : \033[0;34mcurl -fsSL https://raw.githubusercontent.com/opencode-ai/opencode/refs/heads/main/install | bash\033[0m"
+    fi
+  fi
   # Copier AGENTS.md dans le projet s'il n'existe pas
   if [ ! -f "AGENTS.md" ] && [ -f "$HOME/.config/opencode/AGENTS.md" ]; then
     cp "$HOME/.config/opencode/AGENTS.md" AGENTS.md
